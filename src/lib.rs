@@ -1,5 +1,9 @@
 extern crate glium;
 
+pub mod shapes;
+
+use crate::shapes::sphere;
+
 pub fn start() {
     use glium::{glutin, Surface};
     let mut events_loop = glium::glutin::EventsLoop::new();
@@ -9,6 +13,11 @@ pub fn start() {
         .with_title("Arrows");
     let ctx = glium::glutin::ContextBuilder::new().with_vsync(true);
     let display = glium::Display::new(window, ctx, &events_loop).unwrap();
+
+    let _s = sphere::Sphere {
+        radius: 1.0,
+        position: [2.0, 1.0, 3.0],
+    };
 
     let mut window_should_close = false;
     while !window_should_close {
