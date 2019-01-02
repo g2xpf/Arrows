@@ -4,12 +4,12 @@ extern crate glium;
 #[macro_use]
 pub mod shapes;
 
-use crate::shapes::{sphere, ShapeFactory};
+use crate::shapes::{rectangle, sphere, ShapeFactory};
 
 pub fn start() {
     use glium::{glutin, Surface};
     let mut events_loop = glium::glutin::EventsLoop::new();
-    let window_size = glium::glutin::dpi::LogicalSize::new(640.0, 480.0);
+    let window_size = glium::glutin::dpi::LogicalSize::new(640.0, 640.0);
     let window = glium::glutin::WindowBuilder::new()
         .with_dimensions(window_size)
         .with_title("Arrows");
@@ -30,11 +30,26 @@ pub fn start() {
         },
     );
 
+    let mut rectangle_factory = rectangle::RectangleFactory::new(&display);
+    rectangle_factory.spawn(
+        String::from("0"),
+        rectangle::Rectangle {
+            coord: (0.2, 0.2, 0.0),
+            width: 0.7,
+            height: 0.5,
+            angle: std::f32::consts::PI / 4.0,
+        },
+    );
+
     let mut window_should_close = false;
     while !window_should_close {
+        if let Some(rect) = rectangle_factory.get_mut("0") {
+            rect.angle += 0.01;
+        }
         let mut target = display.draw();
         target.clear_color(0.0, 0.0, 0.0, 1.0);
         sphere_factory.draw(&mut target);
+        rectangle_factory.draw(&mut target);
         target.finish().unwrap();
 
         events_loop.poll_events(|ev| match ev {

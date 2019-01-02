@@ -17,6 +17,8 @@ pub trait ShapeFactory<'a, 'b, S>: ShapeFactoryInfo<'b> {
 
     fn spawn(&mut self, key: String, value: S) -> &mut S;
 
+    fn get_mut(&mut self, key: &'static str) -> Option<&mut S>;
+
     fn draw<T>(&self, surface: &mut T)
     where
         T: Surface;
@@ -64,9 +66,15 @@ macro_rules! implement_shape_factory {
             fn spawn(&mut self, key: String, value: $ty) -> &mut $ty {
                 self.uniform.entry(key).or_insert(value)
             }
+
+            fn get_mut(&mut self, key: &'static str) -> Option<&mut $ty> {
+                self.uniform.get_mut(&String::from(key))
+            }
         }
     }
 }
 
 #[macro_use]
 pub mod sphere;
+#[macro_use]
+pub mod rectangle;
