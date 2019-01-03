@@ -2,7 +2,6 @@ use glium;
 use glium::Surface;
 
 use crate::shapes::*;
-use cgmath;
 
 const SPHERE_VERT: &'static str = include_str!("rectangle.vert");
 const SPHERE_FRAG: &'static str = include_str!("rectangle.frag");
