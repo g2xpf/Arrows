@@ -78,3 +78,5 @@ macro_rules! implement_shape_factory {
 pub mod sphere;
 #[macro_use]
 pub mod rectangle;
+#[macro_use]
+pub mod circle;

@@ -4,7 +4,7 @@ extern crate glium;
 #[macro_use]
 pub mod shapes;
 
-use crate::shapes::{rectangle, sphere, ShapeFactory};
+use crate::shapes::{circle, rectangle, sphere, ShapeFactory};
 
 pub fn start() {
     use glium::{glutin, Surface};
@@ -41,6 +41,14 @@ pub fn start() {
         },
     );
 
+    let mut circle_factory = circle::CircleFactory::new(&display);
+    circle_factory.spawn(
+        String::from("0"),
+        circle::Circle {
+            coord: (-0.2, 0.5, 0.0),
+        },
+    );
+
     let mut window_should_close = false;
     while !window_should_close {
         if let Some(rect) = rectangle_factory.get_mut("0") {
@@ -50,6 +58,7 @@ pub fn start() {
         target.clear_color(0.0, 0.0, 0.0, 1.0);
         sphere_factory.draw(&mut target);
         rectangle_factory.draw(&mut target);
+        circle_factory.draw(&mut target);
         target.finish().unwrap();
 
         events_loop.poll_events(|ev| match ev {
