@@ -18,13 +18,13 @@ pub fn start() {
 
     let mut sphere_factory = sphere::SphereFactory::new(&display);
     sphere_factory.spawn(
-        String::from("0"),
+        "0",
         sphere::Sphere {
             coord: (0.0, 0.0, 0.0),
         },
     );
     sphere_factory.spawn(
-        String::from("1"),
+        "1",
         sphere::Sphere {
             coord: (-0.5, -0.5, 0.0),
         },
@@ -32,7 +32,7 @@ pub fn start() {
 
     let mut rectangle_factory = rectangle::RectangleFactory::new(&display);
     rectangle_factory.spawn(
-        String::from("0"),
+        "0",
         rectangle::Rectangle {
             coord: (0.2, 0.2, 0.0),
             width: 0.7,
@@ -43,7 +43,7 @@ pub fn start() {
 
     let mut circle_factory = circle::CircleFactory::new(&display);
     circle_factory.spawn(
-        String::from("0"),
+        "0",
         circle::Circle {
             coord: (-0.2, 0.5, 0.0),
         },

@@ -14,11 +14,8 @@ pub type Indices = Vec<Index>;
 
 pub trait ShapeFactory<'a, 'b, S>: ShapeFactoryInfo<'b> {
     fn new(display: &'a glium::Display) -> Self;
-
-    fn spawn(&mut self, key: String, value: S) -> &mut S;
-
+    fn spawn(&mut self, key: &'static str, value: S) -> &mut S;
     fn get_mut(&mut self, key: &'static str) -> Option<&mut S>;
-
     fn draw<T>(&self, surface: &mut T)
     where
         T: Surface;
@@ -39,7 +36,7 @@ macro_rules! implement_shape_factory {
             vertex_buffer: glium::VertexBuffer<Vertex>,
             index_buffer: glium::IndexBuffer<Index>,
             draw_parameter: glium::DrawParameters<'a>,
-            pub uniform: std::collections::HashMap<String, $ty>,
+            pub uniform: std::collections::HashMap<&'static str, $ty>,
         }
 
         impl<'a, 'b> ShapeFactory<'a, 'b, $ty> for $name<'a> {
@@ -63,12 +60,12 @@ macro_rules! implement_shape_factory {
                 }
             }
 
-            fn spawn(&mut self, key: String, value: $ty) -> &mut $ty {
+            fn spawn(&mut self, key: &'static str, value: $ty) -> &mut $ty {
                 self.uniform.entry(key).or_insert(value)
             }
 
             fn get_mut(&mut self, key: &'static str) -> Option<&mut $ty> {
-                self.uniform.get_mut(&String::from(key))
+                self.uniform.get_mut(key)
             }
         }
     }
