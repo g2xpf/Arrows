@@ -1,10 +1,12 @@
 #[macro_use]
 extern crate glium;
+extern crate image;
 
 #[macro_use]
 pub mod shapes;
 
 use crate::shapes::{circle, rectangle, sphere, ShapeFactory};
+use std::io::Cursor;
 
 pub fn start() {
     use glium::{glutin, Surface};
@@ -30,7 +32,18 @@ pub fn start() {
         },
     );
 
+    let image = image::load(
+        Cursor::new(&include_bytes!("../images/rectangle.png")[..]),
+        image::PNG,
+    )
+    .unwrap()
+    .to_rgba();
+    let image_dimensions = image.dimensions();
+    let image =
+        glium::texture::RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
+
     let mut rectangle_factory = rectangle::RectangleFactory::new(&display);
+    let texture = glium::texture::Texture2d::new(&display, image).unwrap();
     rectangle_factory.spawn(
         "0",
         rectangle::Rectangle {
@@ -38,6 +51,7 @@ pub fn start() {
             width: 0.7,
             height: 0.5,
             angle: std::f32::consts::PI / 4.0,
+            tex: &texture,
         },
     );
 
@@ -53,12 +67,13 @@ pub fn start() {
     while !window_should_close {
         if let Some(rect) = rectangle_factory.get_mut("0") {
             rect.angle += 0.01;
+            println!("{}", rect.angle);
         }
         let mut target = display.draw();
         target.clear_color(0.0, 0.0, 0.0, 1.0);
         sphere_factory.draw(&mut target);
-        rectangle_factory.draw(&mut target);
         circle_factory.draw(&mut target);
+        rectangle_factory.draw(&mut target);
         target.finish().unwrap();
 
         events_loop.poll_events(|ev| match ev {

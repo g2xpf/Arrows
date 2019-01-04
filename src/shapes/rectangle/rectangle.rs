@@ -7,14 +7,23 @@ const SPHERE_VERT: &'static str = include_str!("rectangle.vert");
 const SPHERE_FRAG: &'static str = include_str!("rectangle.frag");
 
 #[derive(Copy, Clone)]
-pub struct Rectangle {
+pub struct Rectangle<'a> {
     pub coord: (f32, f32, f32),
     pub width: f32,
     pub height: f32,
     pub angle: f32,
+    pub tex: &'a glium::texture::Texture2d,
 }
 
-implement_shape_factory!(RectangleFactory, Rectangle, coord, width, height, angle);
+implement_shape_factory!(
+    RectangleFactory,
+    Rectangle<'a>,
+    coord,
+    width,
+    height,
+    angle,
+    tex
+);
 
 impl<'a, 'b> ShapeFactoryInfo<'b> for RectangleFactory<'a> {
     fn get_vertex_src() -> &'static str {
@@ -30,18 +39,22 @@ impl<'a, 'b> ShapeFactoryInfo<'b> for RectangleFactory<'a> {
             Vertex {
                 position: [0.5, 0.5, 0.0],
                 color: [1.0, 0.0, 0.0],
+                uv: [1.0, 1.0],
             },
             Vertex {
                 position: [-0.5, 0.5, 0.0],
                 color: [1.0, 0.0, 0.0],
+                uv: [0.0, 1.0],
             },
             Vertex {
                 position: [0.5, -0.5, 0.0],
                 color: [1.0, 0.0, 0.0],
+                uv: [1.0, 0.0],
             },
             Vertex {
                 position: [-0.5, -0.5, 0.0],
                 color: [1.0, 0.0, 0.0],
+                uv: [0.0, 0.0],
             },
         ]
     }

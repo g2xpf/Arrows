@@ -2,6 +2,7 @@
 
 in vec3 position;
 in vec3 color;
+in vec2 uv;
 
 uniform vec3 coord;
 

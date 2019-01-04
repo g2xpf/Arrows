@@ -30,6 +30,7 @@ impl<'a, 'b> ShapeFactoryInfo<'b> for CircleFactory<'a> {
             v.push(Vertex {
                 position: [0.5 * theta.cos(), 0.5 * theta.sin(), 0.0],
                 color: [0.0, 1.0, 0.0],
+                uv: [0.5 * theta.cos(), 0.5 * theta.sin()],
             });
         }
         v
