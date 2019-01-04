@@ -5,8 +5,10 @@ extern crate image;
 #[macro_use]
 pub mod shapes;
 
+#[macro_use]
+pub mod texture;
+
 use crate::shapes::{circle, rectangle, sphere, ShapeFactory};
-use std::io::Cursor;
 
 pub fn start() {
     use glium::{glutin, Surface};
@@ -32,18 +34,9 @@ pub fn start() {
         },
     );
 
-    let image = image::load(
-        Cursor::new(&include_bytes!("../images/rectangle.png")[..]),
-        image::PNG,
-    )
-    .unwrap()
-    .to_rgba();
-    let image_dimensions = image.dimensions();
-    let image =
-        glium::texture::RawImage2d::from_raw_rgba_reversed(&image.into_raw(), image_dimensions);
+    let texture = texture!(&display, "../images/rectangle.png", image::PNG);
 
     let mut rectangle_factory = rectangle::RectangleFactory::new(&display);
-    let texture = glium::texture::Texture2d::new(&display, image).unwrap();
     rectangle_factory.spawn(
         "0",
         rectangle::Rectangle {
