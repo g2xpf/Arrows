@@ -15,8 +15,7 @@ pub type Indices = Vec<Index>;
 
 pub trait ShapeFactory<'a, S>: ShapeFactoryInfo<'a> {
     fn new(display: &'a glium::Display) -> Self;
-    fn spawn(&mut self, key: &'static str, value: S) -> &mut S;
-    fn get_mut(&mut self, key: &'static str) -> Option<&mut S>;
+    fn spawn(&mut self, value: S);
     fn draw<T>(&self, surface: &mut T)
     where
         T: Surface;
@@ -32,12 +31,27 @@ pub trait ShapeFactoryInfo<'a> {
 
 macro_rules! implement_shape_factory {
     ($name: ident, $ty: ty, $($id: ident), +) => {
+        use std::ops::{Deref, DerefMut};
         pub struct $name<'a> {
             program: glium::Program,
             vertex_buffer: glium::VertexBuffer<Vertex>,
             index_buffer: glium::IndexBuffer<Index>,
             draw_parameter: glium::DrawParameters<'a>,
-            pub uniform: std::collections::HashMap<&'static str, $ty>,
+            pub uniform: Vec<$ty>,
+        }
+
+        impl<'a> Deref for $name<'a> {
+            type Target = [$ty];
+
+            fn deref(&self) -> &[$ty] {
+                &self.uniform
+            }
+        }
+
+        impl<'a> DerefMut for $name<'a> {
+            fn deref_mut(&mut self) -> &mut [$ty] {
+                &mut self.uniform
+            }
         }
 
         impl<'a> ShapeFactory<'a, $ty> for $name<'a> {
@@ -47,12 +61,12 @@ macro_rules! implement_shape_factory {
                     vertex_buffer: glium::VertexBuffer::new(display, &Self::get_attribute()).unwrap(),
                     index_buffer: glium::IndexBuffer::new(display, glium::index::PrimitiveType::TrianglesList, &Self::get_indices()).unwrap(),
                     draw_parameter: Self::get_draw_parameter(),
-                    uniform: std::collections::HashMap::new(),
+                    uniform: Vec::new(),
                 }
             }
 
             fn draw<T>(&self, surface: &mut T) where T: Surface {
-                for (_, s) in self.uniform.iter() {
+                for s in self.uniform.iter() {
                     surface.draw(&self.vertex_buffer, &self.index_buffer, &self.program, &uniform!{
                         $(
                             $id: s.$id,
@@ -61,12 +75,8 @@ macro_rules! implement_shape_factory {
                 }
             }
 
-            fn spawn(&mut self, key: &'static str, value: $ty) -> &mut $ty {
-                self.uniform.entry(key).or_insert(value)
-            }
-
-            fn get_mut(&mut self, key: &'static str) -> Option<&mut $ty> {
-                self.uniform.get_mut(key)
+            fn spawn(&mut self, value: $ty) {
+                self.uniform.push(value);
             }
         }
     }

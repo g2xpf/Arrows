@@ -21,45 +21,33 @@ pub fn start() {
     let display = glium::Display::new(window, ctx, &events_loop).unwrap();
 
     let mut sphere_factory = sphere::SphereFactory::new(&display);
-    sphere_factory.spawn(
-        "0",
-        sphere::Sphere {
-            coord: (0.0, 0.0, 0.0),
-        },
-    );
-    sphere_factory.spawn(
-        "1",
-        sphere::Sphere {
-            coord: (-0.5, -0.5, 0.0),
-        },
-    );
+    sphere_factory.spawn(sphere::Sphere {
+        coord: (0.0, 0.0, 0.0),
+    });
+    sphere_factory.spawn(sphere::Sphere {
+        coord: (-0.5, -0.5, 0.0),
+    });
 
     let texture = texture!(&display, "../images/rectangle.png", image::PNG);
 
     let mut rectangle_factory = rectangle::RectangleFactory::new(&display);
-    rectangle_factory.spawn(
-        "0",
-        rectangle::Rectangle {
-            coord: (0.2, 0.2, 0.0),
-            width: 0.7,
-            height: 0.5,
-            angle: std::f32::consts::PI / 4.0,
-            tex: &texture,
-        },
-    );
+    rectangle_factory.spawn(rectangle::Rectangle {
+        coord: (0.2, 0.2, 0.0),
+        width: 0.7,
+        height: 0.5,
+        angle: std::f32::consts::PI / 4.0,
+        tex: &texture,
+    });
 
     let mut circle_factory = circle::CircleFactory::new(&display);
-    circle_factory.spawn(
-        "0",
-        circle::Circle {
-            coord: (-0.2, 0.5, 0.0),
-        },
-    );
+    circle_factory.spawn(circle::Circle {
+        coord: (-0.2, 0.5, 0.0),
+    });
 
     let mut window_should_close = false;
     while !window_should_close {
-        if let Some(rect) = rectangle_factory.get_mut("0") {
-            rect.angle += 0.01;
+        for rect in rectangle_factory.iter_mut() {
+            rect.angle += 0.016666;
             println!("{}", rect.angle);
         }
         let mut target = display.draw();
