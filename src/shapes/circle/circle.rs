@@ -14,7 +14,7 @@ pub struct Circle {
 
 implement_shape_factory!(CircleFactory, Circle, coord);
 
-impl<'a, 'b> ShapeFactoryInfo<'b> for CircleFactory<'a> {
+impl<'a> ShapeFactoryInfo<'a> for CircleFactory<'a> {
     fn get_vertex_src() -> &'static str {
         SPHERE_VERT
     }
@@ -46,7 +46,7 @@ impl<'a, 'b> ShapeFactoryInfo<'b> for CircleFactory<'a> {
         v
     }
 
-    fn get_draw_parameter() -> glium::DrawParameters<'b> {
+    fn get_draw_parameter() -> glium::DrawParameters<'a> {
         Default::default()
     }
 }

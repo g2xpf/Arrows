@@ -13,7 +13,7 @@ pub type Attribute = Vec<Vertex>;
 pub type Index = u32;
 pub type Indices = Vec<Index>;
 
-pub trait ShapeFactory<'a, 'b, S>: ShapeFactoryInfo<'b> {
+pub trait ShapeFactory<'a, S>: ShapeFactoryInfo<'a> {
     fn new(display: &'a glium::Display) -> Self;
     fn spawn(&mut self, key: &'static str, value: S) -> &mut S;
     fn get_mut(&mut self, key: &'static str) -> Option<&mut S>;
@@ -40,7 +40,7 @@ macro_rules! implement_shape_factory {
             pub uniform: std::collections::HashMap<&'static str, $ty>,
         }
 
-        impl<'a, 'b> ShapeFactory<'a, 'b, $ty> for $name<'a> {
+        impl<'a> ShapeFactory<'a, $ty> for $name<'a> {
             fn new(display: &'a glium::Display) -> Self {
                 $name {
                     program: glium::Program::from_source(display, Self::get_vertex_src(), Self::get_fragment_src(), None).unwrap(),
